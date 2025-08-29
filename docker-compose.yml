@@ -1,0 +1,20 @@
+services:
+  app:
+    build: .
+    container_name: city-weather-test
+    depends_on:
+      - nats
+    environment:
+      WEATHER_API_KEY: ${WEATHER_API_KEY}
+      NATS_URL: nats://nats-server:4222
+    volumes:
+      - .:/app
+    command: ["bin/fetch_weather.rb"]
+
+  nats:
+    image: nats:latest
+    container_name: nats-server
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+
