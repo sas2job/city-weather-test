@@ -1,0 +1,12 @@
+concurrency: 5
+queues:
+  - default
+
+scheduled:
+  poll_interval_average: 10
+
+cron:
+  weather_job:
+    cron: "* * * * *"
+    class: "WeatherWorker"
+    queue: default

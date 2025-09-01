@@ -4,12 +4,34 @@ services:
     container_name: city-weather-test
     depends_on:
       - nats
+      - redis
     environment:
       WEATHER_API_KEY: ${WEATHER_API_KEY}
       NATS_URL: nats://nats-server:4222
+      REDIS_URL: redis://redis:6379/0
     volumes:
       - .:/app
-    command: ["bin/fetch_weather.rb"]
+    command: ruby bin/fetch_weather.rb
+
+  sidekiq:
+    build: .
+    container_name: city-weather-sidekiq
+    depends_on:
+      - redis
+      - nats
+    environment:
+      WEATHER_API_KEY: ${WEATHER_API_KEY}
+      NATS_URL: nats://nats-server:4222
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - .:/app
+    command: bundle exec sidekiq -r ./config/initializers/sidekiq_cron.rb -C config/sidekiq.yml
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
 
   nats:
     image: nats:2.11.8
@@ -17,4 +39,3 @@ services:
     ports:
       - "4222:4222"
       - "8222:8222"
-
