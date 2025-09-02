@@ -1,26 +1,23 @@
 require_relative "weather_api_client"
-require_relative "weather_publisher"
+require_relative "weather_storage"
 require "yaml"
 
 class WeatherService
   def initialize(api_key: ENV.fetch("WEATHER_API_KEY"))
     @client = WeatherApiClient.new(api_key: api_key)
-    @publisher = WeatherPublisher.new
+    @storage = WeatherStorage.new
   end
 
   def run
-    @publisher.connect
-
     cities.each do |city|
       data = @client.fetch_weather(city)
       temp = data.dig("current", "temp_c")
       puts "Fetched for #{city}: #{temp}°C"
 
-      @publisher.publish(city, data)
-      puts "Published weather for #{city} to NATS"
+      @storage.save(city, data)
     end
   ensure
-    @publisher.close if @publisher
+    @storage.close if @storage
   end
 
   private
