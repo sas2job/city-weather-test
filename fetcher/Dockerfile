@@ -18,4 +18,4 @@ RUN bundle install
 
 COPY . .
 
-CMD ["bin/fetch_weather.rb"]
+CMD ["bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]
