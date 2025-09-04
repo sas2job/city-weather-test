@@ -1,16 +1,4 @@
 services:
-  fetcher:
-    build: ./fetcher
-    container_name: city-weather-fetcher
-    depends_on:
-      - nats
-      - redis
-    environment:
-      WEATHER_API_KEY: ${WEATHER_API_KEY}
-      NATS_URL: nats://nats-server:4222
-      REDIS_URL: redis://redis:6379/0
-    command: ruby bin/fetch_weather.rb
-
   sidekiq:
     build: ./fetcher
     container_name: city-weather-sidekiq
