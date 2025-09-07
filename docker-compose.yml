@@ -1,7 +1,7 @@
 services:
-  sidekiq:
+  fetcher:
     build: ./fetcher
-    container_name: city-weather-sidekiq
+    container_name: city-weather-fetcher
     depends_on:
       - redis
       - nats
