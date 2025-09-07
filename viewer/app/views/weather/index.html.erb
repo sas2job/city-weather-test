@@ -1,0 +1,22 @@
+<div class="max-w-3xl mx-auto mt-8">
+  <h1 class="text-2xl font-bold mb-4">Прогноз погоды (NATS)</h1>
+
+  <table class="min-w-full border text-left">
+    <thead class="bg-gray-100">
+      <tr>
+        <th class="border px-4 py-2">Город</th>
+        <th class="border px-4 py-2">Температура (°C)</th>
+        <th class="border px-4 py-2">Получено</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @messages.each do |msg| %>
+        <tr class="hover:bg-gray-50">
+          <td class="border px-4 py-2"><%= msg["city"] %></td>
+          <td class="border px-4 py-2"><%= msg.dig("weather","current","temp_c") %></td>
+          <td class="border px-4 py-2"><%= msg["fetched_at"] %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

@@ -7,6 +7,6 @@ scheduled:
 
 cron:
   weather_job:
-    cron: "* * * * *"
+    cron: "*/20 * * * *" 
     class: "WeatherWorker"
     queue: default
