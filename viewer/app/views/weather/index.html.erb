@@ -10,11 +10,11 @@
       </tr>
     </thead>
     <tbody>
-      <% @messages.each do |msg| %>
+      <% @messages.each do |record| %>
         <tr class="hover:bg-gray-50">
-          <td class="border px-4 py-2"><%= msg["city"] %></td>
-          <td class="border px-4 py-2"><%= msg.dig("weather","current","temp_c") %></td>
-          <td class="border px-4 py-2"><%= msg["fetched_at"] %></td>
+          <td class="border px-4 py-2"><%= record.city.name %></td>
+          <td class="border px-4 py-2"><%= record.temp_c %></td>
+          <td class="border px-4 py-2"><%= record.fetched_at %></td>
         </tr>
       <% end %>
     </tbody>
