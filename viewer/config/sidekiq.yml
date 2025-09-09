@@ -1,0 +1,12 @@
+concurrency: 5
+queues:
+  - default
+
+require: ./config/environment.rb
+
+schedule:
+  weather_sync:
+    cron: "*/20 * * * *"
+    class: "WeatherSyncWorker"
+    queue: default
+    description: "Sync weather data from NATS to Postgres every 20 minutes"

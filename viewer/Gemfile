@@ -49,6 +49,9 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
 end
 
+gem 'sidekiq', '~> 8.0'
+gem 'sidekiq-cron', '~> 2.3'
+
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"

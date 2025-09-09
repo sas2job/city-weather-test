@@ -1,21 +1,21 @@
 services:
-  # Fetcher - получает данные с API и публикует в NATS
-  fetcher:
+  # Fetcher Sidekiq - получает данные с API и публикует в NATS
+  fetcher-sidekiq:
     build: ./fetcher
-    container_name: city-weather-fetcher
+    container_name: city-weather-fetcher-sidekiq
     depends_on:
-      - redis
+      - redis-fetcher
       - nats
     environment:
       WEATHER_API_KEY: ${WEATHER_API_KEY}
       NATS_URL: nats://nats-server:4222
-      REDIS_URL: redis://redis:6379/0
+      REDIS_URL: redis://redis-fetcher:6379/0
     volumes:
       - ./fetcher:/app
     working_dir: /app
     command: bundle exec sidekiq -r ./config/initializers/sidekiq_cron.rb -C config/sidekiq.yml
 
-  # Viewer - отображение данных
+  # Viewer - Rails-приложение (отображение данных)
   viewer:
     build: ./viewer
     container_name: city-weather-viewer
@@ -37,24 +37,33 @@ services:
     build: ./viewer
     container_name: city-weather-viewer-sidekiq
     depends_on:
-      - redis
+      - redis-viewer
       - nats
       - postgres
     environment:
       NATS_URL: nats://nats-server:4222
       DATABASE_URL: postgres://postgres:postgres@postgres:5432/viewer_development
-      REDIS_URL: redis://redis:6379/0
+      REDIS_URL: redis://redis-viewer:6379/0
     volumes:
       - ./viewer:/app
     working_dir: /app
-    command: bundle exec sidekiq -r ./config/initializers/sidekiq_cron.rb -C config/sidekiq.yml
+    command: bundle exec sidekiq -C config/sidekiq.yml
 
-  redis:
+  # Redis для fetcher
+  redis-fetcher:
     image: redis:7
-    container_name: redis
+    container_name: redis-fetcher
     ports:
       - "6379:6379"
 
+  # Redis для viewer
+  redis-viewer:
+    image: redis:7
+    container_name: redis-viewer
+    ports:
+      - "6380:6379"
+
+  # NATS (общий)
   nats:
     image: nats:2.11.8
     container_name: nats-server
@@ -63,6 +72,7 @@ services:
       - "8222:8222"
     command: ["-js", "-DV"]
 
+  # Postgres (общий)
   postgres:
     image: postgres:17
     container_name: postgres
