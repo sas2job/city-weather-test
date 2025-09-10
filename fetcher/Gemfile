@@ -6,3 +6,10 @@ gem 'dotenv', '~> 3.1'
 gem 'nats-pure', '~> 2.4'
 gem 'sidekiq', '~> 8.0'
 gem 'sidekiq-cron', '~> 2.3'
+gem 'logger', '~> 1.7'
+
+group :development, :test do
+  gem 'rspec', '~> 3.13'
+  gem 'simplecov', require: false
+  gem 'webmock', '~> 3.23'
+end
