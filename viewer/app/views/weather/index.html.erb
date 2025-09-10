@@ -3,6 +3,20 @@
     Прогноз погоды (NATS)
   </h1>
 
+  <div class="mb-6">
+    <%= search_form_for @q, url: root_path, method: :get, class: "bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-md flex items-center space-x-4" do |f| %>
+      <div class="flex flex-col">
+        <%= f.label :city_name_eq, "Город", class: "px-5 py-2 text-xs font-semibold text-gray-600 dark:text-gray-300 mb-1" %>
+        <%= f.select :city_name_eq, City.order(:name).pluck(:name, :name),
+                    { include_blank: "Все" },
+                    class: "border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-purple-400 focus:outline-none" %>
+      </div>
+      <div class="flex items-end">
+        <%= f.submit "Фильтровать", class: "px-5 py-2 bg-purple-500 text-white text-sm font-medium rounded-xl shadow hover:bg-purple-600 focus:ring-2 focus:ring-purple-400 transition" %>
+      </div>
+    <% end %>
+  </div>
+
   <div class="shadow-md rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
       <thead class="bg-gradient-to-r from-purple-200 to-pink-200 dark:from-gray-800 dark:to-gray-900">

@@ -14,8 +14,10 @@ RUN apt-get -o Acquire::Check-Valid-Until=false update -qq && \
 
 WORKDIR /app
 
+RUN gem install bundler -v "~> 2.7"
+
 COPY Gemfile Gemfile.lock ./
-RUN bundle install
+RUN bundle install --jobs 4 --retry 3
 
 COPY . .
 
