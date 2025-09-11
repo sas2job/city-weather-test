@@ -2,3 +2,4 @@
 .env
 .env.*
 fetcher/coverage/
+viewer/coverage/
