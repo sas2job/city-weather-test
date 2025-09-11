@@ -1,14 +1,16 @@
 require "nats/io/client"
 require "json"
+require "logger"
 
 class WeatherStorage
   STREAM  = "WEATHER"
   SUBJECT = "weather.data"
+  LOGGER  = Logger.new($stdout)
 
   def initialize
     @nats_url = ENV.fetch("NATS_URL", "nats://127.0.0.1:4222")
 
-    puts "Connecting to NATS server at #{@nats_url}"
+    LOGGER.info("Connecting to NATS server at #{@nats_url}")
     @nats = NATS::IO::Client.new
     @nats.connect(servers: [@nats_url])
 
@@ -20,23 +22,22 @@ class WeatherStorage
   def save(city, data)
     payload = { city: city, weather: data, fetched_at: Time.now.utc }.to_json
     @js.publish(SUBJECT, payload)
-    puts "Saved weather data for #{city}"
+    LOGGER.info("Saved weather data for #{city}")
   rescue => e
-    warn "Error while saving to JetStream: #{e.message}"
+    LOGGER.error("Error while saving to JetStream: #{e.message}")
   end
 
   def read_all
     messages = []
     begin
       sub = @js.pull_subscribe(SUBJECT, "weather_reader")
-
       batch = sub.fetch(10, timeout: 1)
       batch.each do |msg|
         messages << JSON.parse(msg.data)
         msg.ack
       end
     rescue => e
-      warn "Error while reading from JetStream: #{e.message}"
+      LOGGER.error("Error while reading from JetStream: #{e.message}")
     end
     messages
   end
@@ -50,9 +51,9 @@ class WeatherStorage
   def ensure_stream
     begin
       @js.add_stream(name: STREAM, subjects: [SUBJECT])
-      puts "ℹStream #{STREAM} is ready"
+      LOGGER.info("Stream #{STREAM} is ready")
     rescue => e
-      warn "Stream #{STREAM} may already exist: #{e.message}"
+      LOGGER.warn("Stream #{STREAM} may already exist: #{e.message}")
     end
   end
 end
