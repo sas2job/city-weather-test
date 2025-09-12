@@ -13,16 +13,23 @@ class WeatherSyncService
     @js = @nats.jetstream
 
     ensure_consumer
+  rescue => e
+    Rails.logger.warn "NATS connection error: #{e.message}"
   end
 
   def sync(limit: 50)
     sub = @js.pull_subscribe(SUBJECT, DURABLE)
-    batch = sub.fetch(limit, timeout: 1)
 
+    batch = sub.fetch(limit, timeout: 1)
     batch.each do |msg|
-      data = JSON.parse(msg.data)
-      save_to_postgres(data)
-      msg.ack
+      begin
+        data = JSON.parse(msg.data)
+        save_to_postgres(data)
+      rescue => e
+        Rails.logger.warn "Postgres save error: #{e.message}"
+      ensure
+        msg.ack
+      end
     end
   rescue => e
     Rails.logger.warn "NATS sync error: #{e.message}"
@@ -34,11 +41,9 @@ class WeatherSyncService
     city = City.find_or_create_by!(name: data["city"])
     WeatherRecord.create!(
       city: city,
-      temp_c: data.dig("weather","current","temp_c"),
-      fetched_at: data["fetched_at"]
+      temp_c: data.dig("weather", "current", "temp_c"),
+      fetched_at: Time.zone.parse(data["fetched_at"])
     )
-  rescue => e
-    Rails.logger.warn "Postgres save error: #{e.message}"
   end
 
   def ensure_consumer
