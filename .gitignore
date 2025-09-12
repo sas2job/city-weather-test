@@ -1,5 +1,11 @@
 # Environment
 .env
+# Игнорируем все .env файлы
+.env
 .env.*
+
+# Но оставляем шаблон
+!.env.sample
+!.env.test.sample
 fetcher/coverage/
 viewer/coverage/
