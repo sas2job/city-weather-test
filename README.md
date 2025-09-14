@@ -53,14 +53,17 @@ $ docker compose exec viewer bin/rails db:create RAILS_ENV=test - для тес�
 ```
 2. Подготовка базы для тестов
 ```console
-docker compose exec -e RAILS_ENV=test viewer bin/rails db:test:prepare
+$ docker compose exec -e RAILS_ENV=test viewer bin/rails db:test:prepare
 ```
-3. Тестирование
+
+### Тестирование проекта
+1. Тестирование получалки
 - Запуск всех тестов для получалки (RSpec):
 ```console
-docker compose exec fetcher-sidekiq bundle exec rspec - запуск тестов
+$ docker compose exec fetcher-sidekiq bundle exec rspec - запуск тестов
 ```
-- Запуск тестов для отображалки
+2. Тестирование отображалки
+- Запуск rspec тестов
 ```console
 $ docker compose exec viewer bash
 $ bundle exec rspec
@@ -69,3 +72,10 @@ $ bundle exec rspec
 
 fetcher/coverage/index.html - получалка
 viewer/coverage/index.html - отображалка
+
+- cucumber тесты
+Подготовка сценария
+$ docker compose exec viewer bash
+$ ruby bin/preprocess_features.rb
+$ bundle exec cucumber - запуск теста 
+$ DEBUG_CUCUMBER=true bundle exec cucumber - запуск теста с отладкой 
