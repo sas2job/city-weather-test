@@ -1,13 +1,13 @@
 ### Стек проекта
 
-• rails 8.0
-• ruby 3.4
-• postgres 17
-• tailwind
-• nats server 2.11
-• docker 28.3
-• rspec
-• cucumber
+- rails 8.0
+- ruby 3.4
+- postgres 17
+- tailwind
+- nats server 2.11
+- docker 28.3
+- rspec
+- cucumber
 
 ### Настройка и запуск
 1. Склонируйте репозиторий и перейдите в него 
@@ -70,12 +70,16 @@ $ bundle exec rspec
 ```
 После выполнения тестов формируется отчёт о покрытии кода в директории:
 
-fetcher/coverage/index.html - получалка
-viewer/coverage/index.html - отображалка
+- fetcher/coverage/index.html - получалка
+- viewer/coverage/index.html - отображалка
 
 - cucumber тесты
 Подготовка сценария
+```console
 $ docker compose exec viewer bash
 $ ruby bin/preprocess_features.rb
 $ bundle exec cucumber - запуск теста 
-$ DEBUG_CUCUMBER=true bundle exec cucumber - запуск теста с отладкой 
+$ DEBUG_CUCUMBER=true bundle exec cucumber - запуск теста с отладкой
+```
+
+API weatherapi.com
