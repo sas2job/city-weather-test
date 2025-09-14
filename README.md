@@ -73,11 +73,11 @@ $ bundle exec rspec
 - fetcher/coverage/index.html - получалка
 - viewer/coverage/index.html - отображалка
 
-- cucumber тесты
-Подготовка сценария
+3. cucumber тесты
+
 ```console
 $ docker compose exec viewer bash
-$ ruby bin/preprocess_features.rb
+$ ruby bin/preprocess_features.rb - подготовка сценария
 $ bundle exec cucumber - запуск теста 
 $ DEBUG_CUCUMBER=true bundle exec cucumber - запуск теста с отладкой
 ```
